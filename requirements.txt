@@ -1,2 +1,4 @@
 pypdf
 fastapi
+langchain
+langchain-text-splitters
