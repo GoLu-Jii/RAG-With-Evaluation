@@ -14,7 +14,7 @@ def chunk_pages(
     splitter = RecursiveCharacterTextSplitter(
         chunk_size = CHUNK_SIZE,
         chunk_overlap = CHUNK_OVERLAP,
-        splitter = ["\n\n", "\n", ". ", " "]
+        separators = ["\n\n", "\n", ". ", " "]
     )
 
     chunks: List[Dict] = []
