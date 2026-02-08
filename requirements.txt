@@ -2,3 +2,7 @@ pypdf
 fastapi
 langchain
 langchain-text-splitters
+pytest
+pytest-mock
+httpx
+requests-mock

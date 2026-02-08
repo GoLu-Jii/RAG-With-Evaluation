@@ -29,7 +29,7 @@ def chunk_pages(
             chunks.append({
                 "text": text.strip(),
                 "doc_id": doc_id,
-                "page": page[page],
+                "page": page["page"],
                 "source": source
             })
     

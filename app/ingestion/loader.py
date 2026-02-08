@@ -8,11 +8,11 @@ def load_pdf(file_path: str)-> List[Dict]:
     path = Path(file_path)
 
     # validate if exists
-    if not path.exists:
+    if not path.exists():
         raise FileNotFoundError(f"file not found {file_path}")
     
     # validate file extension
-    if path.suffix.lower != ".pdf":
+    if path.suffix.lower() != ".pdf":
         raise ValueError("file must be a PDF!!!")
     
     content = []
