@@ -5,26 +5,29 @@ from typing import List
 from app.core.config import OLLAMA_BASE_URL, EMBEDDING_MODEL
 
 
-# embede text
-def embed_text(texts: List[str])-> List[List[float]]:
-    embedding: List[List[float]] = []
+def embed_text(texts: List[str]) -> List[List[float]]:
+    embeddings: List[List[float]] = []
 
-    response = requests.post(
-        f"{OLLAMA_BASE_URL}/api/embed",
-        json={
+    for text in texts:
+        payload = {
             "model": EMBEDDING_MODEL,
-            "input": texts,
-        },
-        timeout=60,
-    )
+            "input": text
+        }
 
-    response.raise_for_status()
-    embedding.extend(response.json()["embeddings"])
+        response = requests.post(
+            f"{OLLAMA_BASE_URL}/api/embeddings",
+            json=payload,
+            timeout=60
+        )
 
-    return embedding
+        if response.status_code != 200:
+            raise RuntimeError(response.text)
+
+        data = response.json()
+        embeddings.append(data.get("embedding"))
+
+    return embeddings
 
 
-# embede query
 def embed_query(text: str) -> List[float]:
-
     return embed_text([text])[0]
