@@ -1,3 +1,6 @@
+## stepwise roadmap for the project 
+
+
 STEP 1 — core/config.py (START HERE)
 
 Why first?
