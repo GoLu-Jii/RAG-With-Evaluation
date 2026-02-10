@@ -90,6 +90,8 @@ No OpenAI call outside embedder.py
 
 If this fails → stop.
 
+# Progress 09/02/2026
+
 STEP 3 — Vector Store Layer
 3A. retrieval/qdrant.py
 
