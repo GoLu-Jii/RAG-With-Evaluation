@@ -131,6 +131,8 @@ Low-score chunks are excluded
 
 Only after this is retrieval “done”.
 
+# progress 12-02-2026
+
 STEP 4 — Generation (ONLY NOW)
 4A. generation/prompts.py
 
