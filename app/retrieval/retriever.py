@@ -3,6 +3,8 @@ from typing import List, Dict, Optional
 from qdrant_client import QdrantClient
 from app.retrieval.qdrant import raw_search
 
+
+
 def retrive(
     client: QdrantClient,
     collection_name: str,
