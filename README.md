@@ -133,22 +133,34 @@ Only after this is retrieval “done”.
 
 # progress 12-02-2026
 
-STEP 4 — Generation (ONLY NOW)
+STEP 4 — Generation (Ollama + Structured Output)
+
+Only begin generation after retrieval is verified.
+
+Goal: Turn retrieved chunks into answers with citations.
+
 4A. generation/prompts.py
 
-Goal: Write prompts as plain text.
+Write prompts as plain text.
 
 Include:
 
 citation rules
 
-refusal rules (“if context insufficient…”)
+refusal rule if context insufficient
 
-No logic. Just strings.
+instruction to cite chunk IDs
 
+No logic here.
+
+Example instruction:
+
+Use ONLY the provided context.
+Cite chunk IDs in brackets.
+If context insufficient, say "I don't know".
 4B. generation/generator.py
 
-Goal: LLM call + answer assembly.
+Goal: Call Ollama and assemble structured output.
 
 Input:
 
@@ -158,73 +170,173 @@ retrieved chunks
 
 Output:
 
-answer
+{
+  "answer": "...",
+  "sources": [
+    {
+      "doc_id": "...",
+      "chunk_id": "...",
+      "page": 2
+    }
+  ]
+}
 
-cited chunk IDs
+Rules:
 
-Do NOT do retrieval here.
+Call Ollama locally (http://localhost:11434)
 
-STEP 5 — API Layer (FastAPI)
+Inject context
 
-Only now do you touch FastAPI.
+Track chunk IDs manually
+
+Add timeout handling
+
+No retrieval logic inside generator
+
+STEP 5 — API Layer (FastAPI Integration)
+
+Routes must remain thin (10–20 lines).
 
 5A. api/ingest.py
 
-Calls:
+Pipeline:
 
 loader → chunker → embedder → qdrant.upsert
 
-5B. api/query.py
+Return:
 
-Calls:
+{
+  "doc_id": "...",
+  "chunks_indexed": 42
+}
+
+Add:
+
+file upload support
+
+error handling
+
+5B. api/query.py (MOST IMPORTANT ROUTE)
+
+Pipeline:
 
 embed_query → retriever → generator
 
+Return:
 
-Routes should be thin (10–20 lines max).
+{
+  "answer": "...",
+  "sources": [...],
+  "latency_ms": 120
+}
 
-STEP 6 — Evaluation (After system works)
-evaluation/ragas_eval.py
+Add:
+
+latency timing
+
+empty retrieval handling
+
+fallback message
+
+clean JSON output
+
+STEP 6 — Evaluation (Visible & Resume-Ready)
+
+Only after system works end-to-end.
+
+File: evaluation/ragas_eval.py
 
 Implement:
 
-load eval dataset
+20–30 test questions
 
 call /query
 
-compute RAGAS metrics
+compute metrics
 
 store results
 
-If you do this earlier, you’ll waste time.
+Create:
 
-STEP 7 — Observability (Last, but valuable)
+evaluation_report.md
+
+Include:
+
+metrics
+
+failure cases
+
+improvements made
+
+sample outputs
+
+This is required for internship signal.
+
+STEP 7 — Dockerization (Required)
+
+Goal: Run project in one command.
+
+Add:
+
+Dockerfile (FastAPI app)
+
+docker-compose.yml
+
+Services:
+
+api
+
+qdrant
+
+ollama (optional or local)
+
+Command to run:
+
+docker compose up
+
+Provide .env.example.
+
+STEP 8 — README + Demo
+
+Convert project → internship-ready.
+
+README must include:
+
+architecture diagram
+
+how retrieval works
+
+how generation works
+
+evaluation results
+
+run instructions
+
+limitations
+
+Record:
+90-second demo video
+Show:
+
+upload
+
+query
+
+citations
+
+evaluation metrics
+
+STEP 9 — Observability (Light)
 
 Add:
 
 latency logging
 
-token counting
+token estimate
 
-rough cost estimation
+chunk count returned
 
-This turns “works” into “production-aware”.
+rough cost estimate
 
-Correct Mental Model (tattoo this)
-Layer	Determinism
-Config	100%
-Ingestion	95%
-Retrieval	85%
-Generation	40%
-Evaluation	Meta
-
-Always code from top determinism → bottom determinism.
-
-Common wrong starting points (avoid these)
-
-❌ Starting with FastAPI routes
-❌ Writing prompts before retrieval
-❌ Adding RAGAS before ingestion works
-❌ Writing everything in one file “temporarily”
-
-There is no “temporary” in production code.
+Log to console.
+Show sample in README.
