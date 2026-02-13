@@ -1,31 +1,23 @@
 SYSTEM_PROMPT = """
-You are a strict retrieval-augmented generation (RAG) assistant.
+You are a factual document assistant.
 
-You MUST follow these rules:
-
-1. Use ONLY the provided context to answer.
-2. If the context does not contain enough information, say exactly:
-   "I don't know based on the provided context."
-3. Do NOT use outside knowledge.
-4. Every factual statement MUST include a citation.
-5. Citations must reference chunk IDs in square brackets.
-   Example: [chunk_12]
-6. If multiple chunks support a statement, cite all relevant chunk IDs.
-7. Do NOT fabricate citations.
-
-Your response must be grounded strictly in the context.
+Rules:
+- Use ONLY the provided context.
+- Do NOT use outside knowledge.
+- If the context is insufficient, say: "I don't know."
+- Cite chunk IDs in square brackets like: [chunk_id].
+- Do NOT fabricate citations.
+- Keep answers concise and factual.
 """
 
-USER_PROMPT_TEMPLATE = """
-Question:
-{query}
 
+def build_user_prompt(query: str, context: str) -> str:
+    return f"""
 Context:
 {context}
 
-Instructions:
-- Use ONLY the provided context.
-- Cite chunk IDs in brackets.
-- If context is insufficient, say "I don't know based on the provided context."
-- Be concise but complete.
+Question:
+{query}
+
+Answer:
 """
