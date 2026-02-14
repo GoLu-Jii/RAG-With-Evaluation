@@ -5,7 +5,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import (VectorParams, Distance, PointStruct)
 
 def qdrant_client(
-        url: str = "http://localhoast:6333",
+        url: str = "http://localhost:6333",
 )-> QdrantClient:
     return QdrantClient(url = url)
 
@@ -13,7 +13,7 @@ def qdrant_client(
 # check if collection exists if not create one 
 
 def ensure_collection(client: QdrantClient, collection_name: str, vector_size: int)-> None:
-    existing = {c.name for c in client.get_collection().collections}
+    existing = {c.name for c in client.get_collections().collections}
 
     if collection_name in existing:
         return
@@ -33,7 +33,7 @@ def ensure_collection(client: QdrantClient, collection_name: str, vector_size: i
 def upsert_points(
         client: QdrantClient,
         collection_name: str,
-        embeddings: List[str],
+        embeddings: List[List[float]],
         payloads: List[Dict],
 )-> None:
     if len(payloads) != len(embeddings):
@@ -61,7 +61,7 @@ def upsert_points(
 def raw_search(
         client: QdrantClient,
         collection_name: str,
-        query_vector: List[str],
+        query_vector: List[float],
         limit: int,
 ):
     return client.search(

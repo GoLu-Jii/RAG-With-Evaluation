@@ -7,6 +7,7 @@ from app.core.config import OLLAMA_BASE_URL, EMBEDDING_MODEL
 
 def embed_text(texts: List[str]) -> List[List[float]]:
     embeddings: List[List[float]] = []
+    base_url = OLLAMA_BASE_URL.rstrip("/")
 
     for text in texts:
         payload = {
@@ -15,7 +16,7 @@ def embed_text(texts: List[str]) -> List[List[float]]:
         }
 
         response = requests.post(
-            f"{OLLAMA_BASE_URL}/api/embeddings",
+            f"{base_url}/api/embeddings",
             json=payload,
             timeout=60
         )

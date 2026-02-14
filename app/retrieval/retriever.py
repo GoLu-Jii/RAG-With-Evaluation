@@ -11,7 +11,7 @@ def retrive(
     query_vector: List[float],
     top_k: int = 5,
     score_threshold: Optional[float] = None,   # minimum cosine similarity score
-    doc_id: Optional[float] = None
+    doc_id: Optional[str] = None
 ):
     results = raw_search(
         client=client,
@@ -37,6 +37,7 @@ def retrive(
         filtered.append(
             {
                 "score": score,
+                "chunk_id": payload.get("chunk_id"),
                 "text": payload.get("text"),
                 "doc_id": payload.get("doc_id"),
                 "page": payload.get("page"),

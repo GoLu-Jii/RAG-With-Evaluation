@@ -53,8 +53,10 @@ def generate_answer(
 )-> Dict:
     
     if not retrieved_chunk:
-        answer = "i Don't know! "
-        source = []
+        return {
+            "answer": "I don't know.",
+            "sources": [],
+        }
 
     
     context = format_chunks(retrieved_chunk)
@@ -76,7 +78,7 @@ def generate_answer(
     except requests.RequestException as e:
         raise RuntimeError(f"Ollama request failed {e}")
     
-    data = response.json
+    data = response.json()
     answer_text = data.get("response", "").strip()
 
     sources = extracted_sources(answer_text, retrieved_chunk)

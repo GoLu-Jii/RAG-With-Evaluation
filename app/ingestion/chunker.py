@@ -1,6 +1,6 @@
 # implement chunking 
 
-from typing import List, Dict, Union
+from typing import List, Dict
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.core.config import CHUNK_SIZE, CHUNK_OVERLAP
 
@@ -22,11 +22,12 @@ def chunk_pages(
     for page in pages:
         split_texts = splitter.split_text(page["text"])
 
-        for text in split_texts:
+        for chunk_index, text in enumerate(split_texts):
             if not text.strip():
                 continue
 
             chunks.append({
+                "chunk_id": f"{doc_id}_p{page['page']}_c{chunk_index}",
                 "text": text.strip(),
                 "doc_id": doc_id,
                 "page": page["page"],
