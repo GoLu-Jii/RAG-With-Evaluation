@@ -6,6 +6,7 @@ OLLAMA_MODEL = os.getenv("LLM_MODEL", "llama3.1:8b")
 
 # models
 EMBEDDING_MODEL = "nomic-embed-text" 
+EMBEDDING_DIM = 384
 LLM_MODEL = "llama3.1:8b"
 
 # chunks

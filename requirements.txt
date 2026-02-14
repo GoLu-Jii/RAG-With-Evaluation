@@ -7,3 +7,4 @@ pytest-mock
 httpx
 requests-mock
 qdrant-client
+fastapi
