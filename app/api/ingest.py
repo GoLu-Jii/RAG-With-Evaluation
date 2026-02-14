@@ -19,12 +19,12 @@ async def ingest_document(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="only '.pdf' files allowed!!!")
     
-    doc_id = str(uuid.uuidq())
+    doc_id = str(uuid.uuid4())
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
     try:
         content = await file.read()
-        with open (file_path, wb) as f:
+        with open (file_path, "wb") as f:
             f.write(content)
 
         # load
@@ -53,5 +53,7 @@ async def ingest_document(file: UploadFile = File(...)):
             "chunks_indexed": len(chunks),
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
