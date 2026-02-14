@@ -1,7 +1,8 @@
 import os
 
 # ollama settings 
-OLLAMA_BASE_URL = "http://localhost:11434"
+OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_MODEL = "llama3.1:8b"
 
 # models
 EMBEDDING_MODEL = "nomic-embed-text" 
