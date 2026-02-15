@@ -8,3 +8,5 @@ httpx
 requests-mock
 qdrant-client
 fastapi
+uvicorn
+python-multipart

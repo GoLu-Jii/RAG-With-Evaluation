@@ -340,3 +340,9 @@ rough cost estimate
 
 Log to console.
 Show sample in README.
+
+
+
+
+
+ollama pull nomic-embed-text
