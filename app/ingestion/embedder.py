@@ -1,34 +1,25 @@
-# embedding
-
-import requests
 from typing import List
-from app.core.config import OLLAMA_BASE_URL, EMBEDDING_MODEL
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 def embed_text(texts: List[str]) -> List[List[float]]:
-    embeddings: List[List[float]] = []
-    base_url = OLLAMA_BASE_URL.rstrip("/")
+    if not texts:
+        raise ValueError("No texts provided for embedding")
 
-    for text in texts:
-        payload = {
-            "model": EMBEDDING_MODEL,
-            "input": text
-        }
+    embeddings = model.encode(
+        texts,
+        batch_size=32,
+        show_progress_bar=False,
+        normalize_embeddings=True
+    )
 
-        response = requests.post(
-            f"{base_url}/api/embeddings",
-            json=payload,
-            timeout=60
-        )
-
-        if response.status_code != 200:
-            raise RuntimeError(response.text)
-
-        data = response.json()
-        embeddings.append(data.get("embedding"))
-
-    return embeddings
+    return embeddings.tolist()
 
 
 def embed_query(text: str) -> List[float]:
+    if not text or not text.strip():
+        raise ValueError("Query text is empty")
+
     return embed_text([text])[0]

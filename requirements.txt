@@ -10,3 +10,4 @@ qdrant-client
 fastapi
 uvicorn
 python-multipart
+sentence-transformers
