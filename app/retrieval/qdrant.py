@@ -59,13 +59,20 @@ def upsert_points(
 # perform search in embeddings 
 
 def raw_search(
-        client: QdrantClient,
-        collection_name: str,
-        query_vector: List[float],
-        limit: int,
+    client: QdrantClient,
+    collection_name: str,
+    query_vector: List[float],
+    limit: int = 5
 ):
-    return client.search(
-        collection_name= collection_name,
-        query_vector = query_vector,
-        limit = limit,
-    )
+
+    try:
+        results = client.query_points(
+            collection_name=collection_name,
+            query=query_vector,
+            limit=limit
+        )
+        
+        return results
+        
+    except Exception as e:
+        raise Exception(f"Search failed: {str(e)}")

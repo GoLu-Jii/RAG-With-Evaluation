@@ -7,7 +7,6 @@
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import uuid
 import time
 
 from app.core.config import COLLECTION_NAME
