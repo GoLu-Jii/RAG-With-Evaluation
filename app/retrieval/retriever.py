@@ -6,19 +6,21 @@ def raw_search(
     client: QdrantClient,
     collection_name: str,
     query_vector: List[float],
-    query_filter: Optional[Filter] = None, 
-    limit: int = 5
+    limit: int = 5,
+    query_filter: Optional[Filter] = None
 ):
     try:
         results = client.query_points(
             collection_name=collection_name,
             query=query_vector,
-            query_filter=query_filter, 
-            limit=limit
+            limit=limit,
+            query_filter=query_filter,
+            with_payload=True,
+            with_vectors=False
         )
         return results
     except Exception as e:
-        raise Exception(f"Search failed: {str(e)}")
+        raise RuntimeError(f"Qdrant search failed: {e}")
 
 
 def retrive(

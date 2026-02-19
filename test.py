@@ -1,30 +1,43 @@
 from qdrant_client import QdrantClient
-from sentence_transformers import SentenceTransformer
-from app.retrieval.retriever import retrive
+from app.ingestion.embedder import embed_query  # adjust import
+from app.retrieval.retriever import retrive     # adjust import
 
-# --- FIX 1: Define the Client properly ---
-# (No need for a wrapper function, just instantiate it directly)
-client = QdrantClient(url="http://localhost:6333") 
+# COLLECTION_NAME = "documents"
 
-# --- FIX 2: Load the CORRECT Embedding Model ---
-# You MUST use this to search, because your collection is 384 dims.
-# Do NOT use Ollama here.
-model = SentenceTransformer('all-MiniLM-L6-v2')
+# def test_retrieval():
+#     client = QdrantClient("http://localhost:6333")
 
-# --- FIX 3: Generate the Vector ---
-query_text = "What is the text about?"
-query_vector = model.encode(query_text).tolist() 
+#     query = "What are hallucinations in GPT models?"
+#     vector = embed_query(query)
 
-# --- FIX 4: Run the Retrieval ---
-retrieved_chunks = retrive(
-    client=client,
-    collection_name="documents",  # Check exact spelling!
-    query_vector=query_vector,
-    top_k=5,
-    score_threshold=0.01          # Low threshold ensures you see ANY results
+#     results = retrive(
+#         client=client,
+#         collection_name=COLLECTION_NAME,
+#         query_vector=vector,
+#         top_k=5,
+#         score_threshold=0.6
+#     )
+
+#     print("\nResults:\n")
+#     for r in results:
+#         print("Score:", round(r["score"], 4))
+#         print("Doc:", r["doc_id"])
+#         print("Chunk:", r["chunk_id"])
+#         print("Text preview:", r["text"][:120])
+#         print("-" * 60)
+
+
+# if __name__ == "__main__":
+#     test_retrieval()
+
+client = QdrantClient("http://localhost:6333")
+
+# client.delete_collection("documents")
+scroll = client.scroll(
+    collection_name="documents",
+    limit=15,
+    with_payload=True
 )
 
-# Debug Print
-print(f"Found {len(retrieved_chunks)} chunks.")
-for chunk in retrieved_chunks:
-    print(f"Score: {chunk['score']:.3f} | Text: {chunk['text'][:50]}...")
+for p in scroll[0]:
+    print(p.payload["chunk_id"], p.payload["text"][:200])
