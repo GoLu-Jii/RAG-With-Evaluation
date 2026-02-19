@@ -1,10 +1,3 @@
-# query
-# → embed_query
-# → retrieve
-# → generate_answer
-# → measure latency
-# → return structured JSON
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import time
@@ -39,7 +32,7 @@ async def query_document(request: QueryRequest):
                 collection_name = COLLECTION_NAME,
                 query_vector = query_vector,
                 top_k = 5,
-                score_threshold = 0.5,   # minimum cosine similarity score
+                score_threshold = 0.1,   # minimum cosine similarity score
         )
 
         # handel empty retrieval 
@@ -59,10 +52,13 @@ async def query_document(request: QueryRequest):
         )
 
         latency_ms = int((time.time() - start_time) * 1000)
+        answer_text = (result.get("answer") or "").strip()
+        if not answer_text:
+            answer_text = "I don't know."
 
         return{
-            "answer": result["answer"],
-            "sources": result["sources"],
+            "answer": answer_text,
+            "sources": result.get("sources", []),
             "latency": latency_ms,
         }
     

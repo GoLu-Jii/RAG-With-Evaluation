@@ -77,9 +77,31 @@ def generate_answer(
         )
     except requests.RequestException as e:
         raise RuntimeError(f"Ollama request failed {e}")
-    
-    data = response.json()
+
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as e:
+        detail = ""
+        try:
+            detail = response.json().get("error", "")
+        except ValueError:
+            detail = response.text.strip()
+        raise RuntimeError(f"Ollama returned HTTP {response.status_code}: {detail}") from e
+
+    try:
+        data = response.json()
+    except ValueError as e:
+        raise RuntimeError("Ollama returned invalid JSON") from e
+
+    if data.get("error"):
+        raise RuntimeError(f"Ollama generation error: {data['error']}")
+
     answer_text = data.get("response", "").strip()
+    if not answer_text:
+        return {
+            "answer": "I don't know.",
+            "sources": [],
+        }
 
     sources = extracted_sources(answer_text, retrieved_chunk)
 
