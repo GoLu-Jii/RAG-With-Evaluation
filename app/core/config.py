@@ -16,5 +16,4 @@ CHUNK_OVERLAP = 50
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 COLLECTION_NAME = "documents"
 
-# groq
-GROQ_API_KEY="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"
+

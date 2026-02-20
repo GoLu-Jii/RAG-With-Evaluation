@@ -1,13 +1,17 @@
 import requests
 from typing import List, Dict
 
-from app.generation.prompts import SYSTEM_PROMPT, build_user_prompt
 import os
+from app.generation.prompts import SYSTEM_PROMPT, build_user_prompt
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from groq import Groq
 from app.core.config import GROQ_API_KEY
 
-groq_client = Groq(api_key=GROQ_API_KEY)
+api_key = os.getenv("GROQ_API_KEY")
+groq_client = Groq(api_key=api_key)
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("LLM_MODEL", "llama3.1:8b")
