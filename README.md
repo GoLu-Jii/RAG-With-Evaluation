@@ -1,3 +1,13 @@
+<!-- ollama pull nomic-embed-text -->
+
+Install Python Dependencies
+
+Use Python 3.10+ and install dependencies before running the API.
+
+Install from requirements file:
+pip install -r requirements.txt
+
+
 STEP 6 — Evaluation (Visible & Resume-Ready)
 
 Only after system works end-to-end.
@@ -103,4 +113,4 @@ Show sample in README.
 
 
 
-ollama pull nomic-embed-text
+
