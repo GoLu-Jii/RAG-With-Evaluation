@@ -2,7 +2,7 @@ from qdrant_client import QdrantClient
 from app.ingestion.embedder import embed_query  # adjust import
 from app.retrieval.retriever import retrive     # adjust import
 
-# COLLECTION_NAME = "documents"
+COLLECTION_NAME = "documents"
 
 # def test_retrieval():
 #     client = QdrantClient("http://localhost:6333")
@@ -32,12 +32,12 @@ from app.retrieval.retriever import retrive     # adjust import
 
 client = QdrantClient("http://localhost:6333")
 
-# client.delete_collection("documents")
-scroll = client.scroll(
-    collection_name="documents",
-    limit=15,
-    with_payload=True
-)
+client.delete_collection("documents")
+# scroll = client.scroll(
+#     collection_name="documents",
+#     limit=15,
+#     with_payload=True
+# )
 
-for p in scroll[0]:
-    print(p.payload["chunk_id"], p.payload["text"][:200])
+# for p in scroll[0]:
+#     print(p.payload["chunk_id"], p.payload["text"][:200])

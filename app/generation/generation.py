@@ -4,6 +4,11 @@ from typing import List, Dict
 from app.generation.prompts import SYSTEM_PROMPT, build_user_prompt
 import os
 
+from groq import Groq
+from app.core.config import GROQ_API_KEY
+
+groq_client = Groq(api_key=GROQ_API_KEY)
+
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("LLM_MODEL", "llama3.1:8b")
 
@@ -47,56 +52,107 @@ def extracted_sources(answer: str, chunks: List[Dict])-> List[Dict]:
 
 # generate answer using ollama
 
+# def generate_answer(
+#         query: str,
+#         retrieved_chunk: List[Dict],
+# )-> Dict:
+    
+#     if not retrieved_chunk:
+#         return {
+#             "answer": "I don't know.",
+#             "sources": [],
+#         }
+
+    
+#     context = format_chunks(retrieved_chunk)
+#     user_prompt = build_user_prompt(query, context)
+
+#     payload = {
+#         "model": OLLAMA_MODEL,
+#         "prompt": user_prompt,
+#         "system": SYSTEM_PROMPT,
+#         "stream": False,
+#     }
+
+#     try:
+#         response = requests.post(
+#             OLLAMA_URL,
+#             json=payload,
+#             timeout=TIMEOUT
+#         )
+#     except requests.RequestException as e:
+#         raise RuntimeError(f"Ollama request failed {e}")
+
+#     try:
+#         response.raise_for_status()
+#     except requests.HTTPError as e:
+#         detail = ""
+#         try:
+#             detail = response.json().get("error", "")
+#         except ValueError:
+#             detail = response.text.strip()
+#         raise RuntimeError(f"Ollama returned HTTP {response.status_code}: {detail}") from e
+
+#     try:
+#         data = response.json()
+#     except ValueError as e:
+#         raise RuntimeError("Ollama returned invalid JSON") from e
+
+#     if data.get("error"):
+#         raise RuntimeError(f"Ollama generation error: {data['error']}")
+
+#     answer_text = data.get("response", "").strip()
+#     if not answer_text:
+#         return {
+#             "answer": "I don't know.",
+#             "sources": [],
+#         }
+
+#     sources = extracted_sources(answer_text, retrieved_chunk)
+
+#     return{
+#         "answer": answer_text,
+#         "sources": sources,
+#     }
+
+
+# generate answer using groq 
+
+
+
+
+
+
 def generate_answer(
         query: str,
         retrieved_chunk: List[Dict],
-)-> Dict:
-    
+) -> Dict:
+
     if not retrieved_chunk:
         return {
             "answer": "I don't know.",
             "sources": [],
         }
 
-    
     context = format_chunks(retrieved_chunk)
     user_prompt = build_user_prompt(query, context)
 
-    payload = {
-        "model": OLLAMA_MODEL,
-        "prompt": user_prompt,
-        "system": SYSTEM_PROMPT,
-        "stream": False,
-    }
-
     try:
-        response = requests.post(
-            OLLAMA_URL,
-            json=payload,
-            timeout=TIMEOUT
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.2,
+            max_tokens=800,
         )
-    except requests.RequestException as e:
-        raise RuntimeError(f"Ollama request failed {e}")
 
-    try:
-        response.raise_for_status()
-    except requests.HTTPError as e:
-        detail = ""
-        try:
-            detail = response.json().get("error", "")
-        except ValueError:
-            detail = response.text.strip()
-        raise RuntimeError(f"Ollama returned HTTP {response.status_code}: {detail}") from e
+    except Exception as e:
+        raise RuntimeError(f"Groq request failed: {e}")
 
-    try:
-        data = response.json()
-    except ValueError as e:
-        raise RuntimeError("Ollama returned invalid JSON") from e
+    answer_text = response.choices[0].message.content.strip()
 
-    if data.get("error"):
-        raise RuntimeError(f"Ollama generation error: {data['error']}")
-
-    answer_text = data.get("response", "").strip()
     if not answer_text:
         return {
             "answer": "I don't know.",
@@ -105,7 +161,7 @@ def generate_answer(
 
     sources = extracted_sources(answer_text, retrieved_chunk)
 
-    return{
+    return {
         "answer": answer_text,
         "sources": sources,
     }
