@@ -9,3 +9,4 @@ qdrant-client
 requests
 python-dotenv
 groq
+ragas

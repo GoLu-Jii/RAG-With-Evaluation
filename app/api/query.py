@@ -31,7 +31,7 @@ async def query_document(request: QueryRequest):
                 client = client,
                 collection_name = COLLECTION_NAME,
                 query_vector = query_vector,
-                top_k = 5,
+                top_k = 3,
                 score_threshold = 0.1,   # minimum cosine similarity score
         )
 
@@ -42,6 +42,7 @@ async def query_document(request: QueryRequest):
                 "answer": "I don't know",
                 "sources": [],
                 "latency": latency_ms,
+                "retrieved_chunks": retrieved_chunks,
             }
         
 
@@ -60,6 +61,7 @@ async def query_document(request: QueryRequest):
             "answer": answer_text,
             "sources": result.get("sources", []),
             "latency": latency_ms,
+            "retrieved_chunks": retrieved_chunks,
         }
     
     except HTTPException:

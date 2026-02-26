@@ -27,7 +27,7 @@ def retrive(
     client: QdrantClient,
     collection_name: str,
     query_vector: List[float],
-    top_k: int = 5,
+    top_k: int = 3,
     score_threshold: Optional[float] = None,
     doc_id: Optional[str] = None
 ):

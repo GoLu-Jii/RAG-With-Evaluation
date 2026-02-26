@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from groq import Groq
-from app.core.config import GROQ_API_KEY
 
 api_key = os.getenv("GROQ_API_KEY")
 groq_client = Groq(api_key=api_key)
@@ -136,6 +135,7 @@ def generate_answer(
         return {
             "answer": "I don't know.",
             "sources": [],
+            "retrieved_chunks": "NONE",
         }
 
     context = format_chunks(retrieved_chunk)
@@ -161,6 +161,7 @@ def generate_answer(
         return {
             "answer": "I don't know.",
             "sources": [],
+            "retrieved_chunks": retrieved_chunk,
         }
 
     sources = extracted_sources(answer_text, retrieved_chunk)
@@ -168,4 +169,5 @@ def generate_answer(
     return {
         "answer": answer_text,
         "sources": sources,
+        "retrieved_chunks": retrieved_chunk,
     }

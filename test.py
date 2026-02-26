@@ -14,7 +14,7 @@ COLLECTION_NAME = "documents"
 #         client=client,
 #         collection_name=COLLECTION_NAME,
 #         query_vector=vector,
-#         top_k=5,
+#         top_k=3,
 #         score_threshold=0.6
 #     )
 
