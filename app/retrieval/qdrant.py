@@ -1,14 +1,34 @@
+import os 
 from typing import List, Dict
 import uuid
+from dotenv import load_dotenv
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import (VectorParams, Distance, PointStruct)
 
-def qdrant_client(
-        url: str = "http://localhost:6333",
-)-> QdrantClient:
-    return QdrantClient(url = url)
 
+load_dotenv()
+
+url = os.getenv("QDRANT_URL")
+api_key = os.getenv("QDRANT_API_KEY")
+
+# def qdrant_client(
+#         url: str = "http://localhost:6333",
+# )-> QdrantClient:
+#     return QdrantClient(url = url)
+
+def qdrant_client(
+    url: str = url,
+    api_key: str = api_key
+)-> QdrantClient:
+
+    if not url or not api_key:
+        raise ValueError("missing qdrant url or qdrant api key in the envirenment variable!!!")
+    
+    return QdrantClient(
+        url = url,
+        api_key=api_key
+    )
 
 # check if collection exists if not create one 
 

@@ -9,7 +9,7 @@ EMBEDDING_DIM = 384
 LLM_MODEL = "llama3.1:8b"
 
 # chunks
-CHUNK_SIZE = 500
+CHUNK_SIZE = 700
 CHUNK_OVERLAP = 50
 
 # vector_db
