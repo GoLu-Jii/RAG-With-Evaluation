@@ -110,7 +110,7 @@ Log to console.
 Show sample in README.
 
 
-
+docker run -p 7860:7860 --env-file .env my-fastapi-backend
 
 
 
