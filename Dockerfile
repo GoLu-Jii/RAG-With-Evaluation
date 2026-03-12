@@ -41,11 +41,11 @@ FROM python:3.11-slim
 # set working dir 
 WORKDIR /app
 
-# copy the current directry contents in the conatiner at /app
-COPY ./requirements.txt /app.requirements.txt
+# copy the current directory contents in the container at /app
+COPY requirements.txt /app/requirements.txt
 
 # install requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 # setup a new user 
 RUN useradd user
@@ -54,8 +54,10 @@ RUN useradd user
 USER user
 
 # set home to user's home directory 
-ENV HOME = /home/user \
-    PATH = /home/user/.local/bin:$PATH
+# ENV HOME = /home/user \
+#     PATH = /home/user/.local/bin:$PATH
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
 
 # set working directory to users home dorectory 
 WORKDIR $HOME/app
