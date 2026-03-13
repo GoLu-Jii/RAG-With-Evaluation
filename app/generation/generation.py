@@ -9,8 +9,8 @@ load_dotenv()
 
 from groq import Groq
 
-api_key = os.getenv("GROQ_API_KEY")
-groq_client = Groq(api_key=api_key)
+# api_key = os.getenv("GROQ_API_KEY")
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("LLM_MODEL", "llama3.1:8b")
